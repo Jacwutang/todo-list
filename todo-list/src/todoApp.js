@@ -12,7 +12,7 @@ class TodoApp extends react.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        const newTodoItem = this.state.newItem;
+        let newTodoItem = {id: Math.random() * 100, value: this.state.newItem};
         this.setState({'items': this.state.items.concat(newTodoItem)})
     }
 
@@ -20,11 +20,11 @@ class TodoApp extends react.Component {
         e.preventDefault();
         
         if(e.target.type === "checkbox") {
-            const itemsIdx = parseInt(e.target.value);
-            
+            const itemsID = parseFloat(e.target.value);
+            console.log(itemsID)
             this.setState(
                 {
-                    'items': this.state.items.filter( (item,idx) => idx !== itemsIdx)
+                    'items': this.state.items.filter( (item,idx) => item.id !== itemsID)
                 }
             );
         }
@@ -43,12 +43,12 @@ class TodoApp extends react.Component {
                     </label>
                     <input type="submit" value="Submit"/>
                 </form>
-            
+                
                 {this.state.items.map( (item, idx) => 
-                    <li key={idx}>
+                    <li key={item.id}>
                         <div> 
-                            <h2> {item} 
-                                <input type="checkbox" value={idx} onChange={this.handleChange}/> 
+                            <h2> {item.value} 
+                                <input type="checkbox" value={item.id} onChange={this.handleChange}/> 
                             </h2>
                         </div>
                     </li>
@@ -62,8 +62,3 @@ class TodoApp extends react.Component {
 }
 
 export default TodoApp;
-
-
-
-// Follow-up constructor(props) + super(props)
-// program backtick
