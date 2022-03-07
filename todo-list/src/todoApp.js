@@ -1,31 +1,72 @@
-import react from "react";
-import ListDisplay from "./listDisplay";
-import InputForm from "./inputForm";
+import react, {useState,  useEffect} from "react";
 
-class TodoApp extends react.Component {
-    constructor(props) {
-        super(props);
+const TodoApp = () => {
+    
+    const [todoInput, setTodoInput] = useState("");
+    
+    const [todos, setTodos] = useState([]);
 
-        this.state = {'todos': []}
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        
+        const todoId = Math.random() * 100;
+        
+        const newTodo = {id: todoId, value: todoInput};
+        
+        todos.push(newTodo);
 
-        this.onHandleSubmit = this.onHandleSubmit.bind(this);
-    }
-
-    onHandleSubmit(value) {
-        let newTodoItem = {'id': Math.random() * 100, 'value': value};
-        this.setState({'todos': this.state.todos.concat(newTodoItem)});
-    }
-
-    render() {
-        return(
-            <div>
-                <InputForm onHandleSubmit={this.onHandleSubmit}/>
-                <ListDisplay items={this.state.todos}/>
-            </div>
-        )
+        setTodos(todos);
+        setTodoInput("");
         
     }
 
+    const handleChange = (e) => {
+        const val = e.target.value;
+        setTodoInput(val);    
+    }
+
+    const handleDeletion = (e) => {
+        const todoId = parseFloat(e.target.value);
+        
+        const newTodos = todos.filter( (todo) => todo.id !== todoId);
+        
+        setTodos(newTodos);
+    }
+    
+    return (
+        <div>
+            <h1> Todo List </h1>
+
+            <form onSubmit={handleSubmit}>
+                <label>
+                    Enter Todo
+                    <input type="input" value={todoInput} onChange={handleChange}/>
+                </label>
+                <button>
+                    Submit
+                </button>
+            </form>
+
+            <h2> List of Todos </h2>
+            <div>
+                <ul>
+                    {
+                        todos.map( (todo,idx) => {
+                            
+                            return (
+                                <li key={todo.id}>
+                                    {todo.value}
+
+                                    <input type="checkbox" value={todo.id} onChange={handleDeletion}/>
+                                    
+                                </li>
+                            )
+                        })
+                    }
+                </ul>
+            </div>
+        </div>
+    );
 }
 
 export default TodoApp;
