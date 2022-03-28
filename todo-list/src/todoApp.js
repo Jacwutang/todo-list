@@ -32,6 +32,18 @@ const TodoApp = () => {
         const newTodoItem = {'id': Math.random() * 100 ,'val': todoItem};
         
         const newTodos = [...todos, newTodoItem];
+        
+        const newUserObj = {'userName': newTodoItem['val']};
+        fetch('http://127.0.0.1:8080/users', {
+            method: 'POST',
+            body: JSON.stringify(newUserObj),
+            headers: {
+                'Content-Type': 'Application/JSON',
+              },
+            }
+        );
+        
+
         setTodos(newTodos);
     }
 
