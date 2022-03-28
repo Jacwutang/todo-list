@@ -1,64 +1,51 @@
-import react, { forwardRef } from "react";
+import react, {useState,  useEffect} from "react";
+import InputForm from "./inputForm";
+import ListRender from "./listRender";
 
-class TodoApp extends react.Component {
-    constructor(props) {
-        super(props);
 
-        this.state = {'items': [], 'newItem': ''};
 
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-    }
+const TodoApp = () => {
+    
+    const [todoItem, setTodoItem] = useState("");
+    const [todos, setTodos] = useState([]);
 
-    handleSubmit(e) {
-        e.preventDefault();
-        let newTodoItem = {id: Math.random() * 100, value: this.state.newItem};
-        this.setState({'items': this.state.items.concat(newTodoItem)})
-    }
 
-    handleChange(e) {
+    useEffect( () => {
+        fetch('http://127.0.0.1:8080/users/1')
+        .then(response => response.json())
+        .then(data => console.log(data));
+    });
+
+    
+    const handleInputChange = (e) => {
         e.preventDefault();
         
-        if(e.target.type === "checkbox") {
-            const itemsID = parseFloat(e.target.value);
-            console.log(itemsID)
-            this.setState(
-                {
-                    'items': this.state.items.filter( (item,idx) => item.id !== itemsID)
-                }
-            );
-        }
-        else {
-            this.setState({'newItem': e.target.value});
-        }
-    }
-    
-    render() {
-        return (
-            <div>
-                <form onSubmit={this.handleSubmit}>
-                    <label> 
-                        Add Todo:
-                        <input type="text" value={this.state.newItem} onChange={this.handleChange}/>
-                    </label>
-                    <input type="submit" value="Submit"/>
-                </form>
-                
-                {this.state.items.map( (item, idx) => 
-                    <li key={item.id}>
-                        <div> 
-                            <h2> {item.value} 
-                                <input type="checkbox" value={item.id} onChange={this.handleChange}/> 
-                            </h2>
-                        </div>
-                    </li>
-                )}
-            </div>
-            
-        );
+        const todoItem = e.target.value;
+        
+        setTodoItem(todoItem);
     }
 
+    const handleSubmit = (e) => {
+        
+        e.preventDefault();
+        
+        const newTodoItem = {'id': Math.random() * 100 ,'val': todoItem};
+        
+        const newTodos = [...todos, newTodoItem];
+        setTodos(newTodos);
+    }
 
+    return (
+        <div>
+            <h1> Todo List </h1>
+            <InputForm 
+                handleInputChange={handleInputChange} 
+                handleSubmit={handleSubmit}
+            />
+            <ListRender items={todos}/>
+        </div>
+        
+    ); 
 }
 
 export default TodoApp;
